@@ -37,7 +37,7 @@ const Gallery = () => {
       setIsModalOpen(true);
     }
   };
-  console.log(usersList)
+
   const handleModalClose = () => {
     setSelectedUser(null);
     setIsModalOpen(false);
