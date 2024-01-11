@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import Avatar from "boring-avatars";
 import {
   FaRegCircleXmark,
@@ -21,7 +21,34 @@ const Gallery = ({ users }: GalleryProps) => {
   const [usersList, setUsersList] = useState(users);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sortField, setSortField] = useState('')
+  const [sortAsc, setSort] = useState('ascending')
 
+  const handleSortField = (val: SetStateAction<string>) => {
+    setSortField(val)
+  }
+  
+  const handleSort = (val: SetStateAction<string>) => {
+    setSort(val)
+  }
+
+  const sortUsersInfo = (users: User[]) => {
+    const sortedInfo = [...users].sort((userA: string, userB: string) => {
+      let setA = userA[sortField];
+      let setB = userB[sortField];
+
+      if(sortField.trim().length !== 0){
+        if(sortField === 'company'){
+          setA = userA[sortField].name
+          setB = userB[sortField].name
+        }
+        if(sortField === 'name' || sortField === 'email'){
+          return sortAsc === 'ascending' ? setA.toLowerCase() < setB.toLowerCase() ? -1 : 1 : setB.toLowerCase() < setA.toLowerCase() ? -1 : 1
+        }
+      }
+    });
+    return sortedInfo;
+  }
   const handleModalOpen = (id: number) => {
     const user = usersList.find((item) => item.id === id) || null;
 
@@ -40,10 +67,10 @@ const Gallery = ({ users }: GalleryProps) => {
     <div className="user-gallery">
       <div className="heading">
         <h1 className="title">Users</h1>
-        <Controls />
+        <Controls handleSortField={handleSortField} handleSort={handleSort}/>
       </div>
       <div className="items">
-        {usersList.map((user, index) => (
+        {sortUsersInfo(users).map((user, index) => (
           <div
             className="item user-card"
             key={index}
