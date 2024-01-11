@@ -1,3 +1,11 @@
+.adjust-width > .info {
+  flex: auto !important;
+}
+
+.adjust-width {
+  width: auto;
+}
+
 .user-card {
   display: flex;
   flex-flow: row nowrap;
