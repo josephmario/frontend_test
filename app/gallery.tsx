@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Avatar from "boring-avatars";
 import {
   FaRegCircleXmark,
@@ -13,13 +13,21 @@ import Modal from "./modal";
 
 import { User } from "./types/user";
 
-export type GalleryProps = {
-  users: User[];
-};
-const Gallery = ({ users }: GalleryProps) => {
-  const [usersList, setUsersList] = useState(users);
+
+const Gallery = () => {
+  const [usersList, setUsersList] = useState([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchInfo = () => { 
+    const url = "https://jsonplaceholder.typicode.com/users"
+    return fetch(url) 
+            .then(async (res) => setUsersList(await res.json()))
+    }
+    
+  useEffect(() => {
+    fetchInfo();
+  }, [])
 
   const handleModalOpen = (id: number) => {
     const user = usersList.find((item) => item.id === id) || null;
@@ -29,7 +37,7 @@ const Gallery = ({ users }: GalleryProps) => {
       setIsModalOpen(true);
     }
   };
-
+  console.log(usersList)
   const handleModalClose = () => {
     setSelectedUser(null);
     setIsModalOpen(false);
@@ -39,23 +47,23 @@ const Gallery = ({ users }: GalleryProps) => {
     <div className="user-gallery">
       <h1 className="heading">Users</h1>
       <div className="items">
-        {usersList.map((user, index) => (
+        {usersList && usersList.map((user, index) => (
           <div
             className="item user-card"
             key={index}
-            onClick={() => handleModalOpen(user.id)}
+            onClick={() => handleModalOpen(user?.id)}
           >
             <div className="body">
               <Avatar
                 size={96}
-                name={user.name}
+                name={user?.name}
                 variant="marble"
                 colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
               />
             </div>
             <div className="info">
-              <div className="name">{user.name}</div>
-              <div className="company">{user.company.name}</div>
+              <div className="name">{user?.name}</div>
+              <div className="company">{user?.company.name}</div>
             </div>
           </div>
         ))}
