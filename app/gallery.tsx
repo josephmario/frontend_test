@@ -41,7 +41,7 @@ const Gallery = ({ users }: GalleryProps) => {
       <div className="items">
         {usersList.map((user, index) => (
           <div
-            className="item user-card"
+            className="item user-card adjust-width"
             key={index}
             onClick={() => handleModalOpen(user.id)}
           >
